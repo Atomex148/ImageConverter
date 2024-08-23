@@ -1,0 +1,561 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>WebPWrapper</name>
+    </assembly>
+    <members>
+        <member name="T:WebPWrapper.Decoder.IWebPDecoder">
+            <summary>
+            WebP decoder
+            </summary>
+        </member>
+        <member name="M:WebPWrapper.Decoder.IWebPDecoder.DecodeAsync(System.IO.Stream,System.IO.Stream)">
+            <summary>
+            Decode.
+            </summary>
+            <param name="input">Input WebP image</param>
+            <param name="output">Output image</param>
+        </member>
+        <member name="M:WebPWrapper.Decoder.IWebPDecoder.Decode(System.IO.Stream,System.IO.Stream)">
+            <summary>
+            Decode.
+            </summary>
+            <param name="input">Input WebP image</param>
+            <param name="output">Output image</param>
+        </member>
+        <member name="T:WebPWrapper.Decoder.IWebPDecoderBuilder">
+            <summary>
+            WebP decoder builder
+            </summary>
+        </member>
+        <member name="M:WebPWrapper.Decoder.IWebPDecoderBuilder.ExportFormat(WebPWrapper.Decoder.ExportFormats)">
+            <summary>
+            Output image format
+            </summary>
+            <param name="format">Image format</param> 
+        </member>
+        <member name="M:WebPWrapper.Decoder.IWebPDecoderBuilder.Crop(System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Crop the decoded picture to a rectangle with top-left corner at coordinates (<paramref name="x"/>, <paramref name="y"/>) and size width x height. This cropping area must be fully contained within the source rectangle. The top-left corner will be snapped to even coordinates if needed. This option is meant to reduce the memory needed for cropping large images. Note: the cropping is applied before any scaling.
+            </summary>
+            <param name="x">Top-left corner X</param>
+            <param name="y">Top-left corner Y</param>
+            <param name="width">Width</param>
+            <param name="height">Height</param> 
+        </member>
+        <member name="M:WebPWrapper.Decoder.IWebPDecoderBuilder.Resize(System.Int32,System.Int32)">
+            <summary>
+            Rescale the decoded picture. At least one of <paramref name="height"/> or <paramref name="width"/> is non-zero, and if one of the values is zero then the scaling is equal
+            </summary>
+            <param name="width">Width</param>
+            <param name="height">Height</param> 
+        </member>
+        <member name="M:WebPWrapper.Decoder.IWebPDecoderBuilder.MultiThread">
+            <summary>
+            Use multi-threading for decoding, if possible.
+            </summary>
+        </member>
+        <member name="M:WebPWrapper.Decoder.IWebPDecoderBuilder.DisableAssemblyOptimization">
+            <summary>
+            Disable all assembly optimizations.
+            </summary>
+        </member>
+        <member name="M:WebPWrapper.Decoder.IWebPDecoderBuilder.NoFilter">
+            <summary>
+            Don't use the in-loop filtering process even if it is required by the bitstream. This may produce visible blocks on the non-compliant output, but it will make the decoding faster.
+            </summary> 
+        </member>
+        <member name="M:WebPWrapper.Decoder.IWebPDecoderBuilder.NoFancy">
+            <summary>
+            Don't use the fancy upscaler for YUV420. This may lead to jaggy edges (especially the red ones), but should be faster.
+            </summary>
+        </member>
+        <member name="M:WebPWrapper.Decoder.IWebPDecoderBuilder.Dither(System.Int32)">
+            <summary>
+            Specify a dithering strength between 0 and 100. Dithering is a post-processing effect applied to chroma components in lossy compression. It helps by smoothing gradients and avoiding banding artifacts.
+            </summary>
+            <param name="strength">Dithering strength(0~100)</param> 
+        </member>
+        <member name="M:WebPWrapper.Decoder.IWebPDecoderBuilder.Flip">
+            <summary>
+            Flip decoded image vertically (can be useful for OpenGL textures for instance).
+            </summary>
+        </member>
+        <member name="M:WebPWrapper.Decoder.IWebPDecoderBuilder.Reset">
+            <summary>
+            Reset
+            </summary>
+        </member>
+        <member name="M:WebPWrapper.Decoder.IWebPDecoderBuilder.Build">
+            <summary>
+            Make WeP decoder instance.
+            </summary>
+            <returns>Web decoder instance</returns>
+        </member>
+        <member name="M:WebPWrapper.Decoder.IWebPDecoderBuilder.GetCurrentArguments">
+            <summary>
+            Get current CLI arguments.
+            </summary>
+            <returns>CLI arguments</returns>
+        </member>
+        <member name="T:WebPWrapper.Decoder.WebPDecoder">
+            <summary>
+            Default WebP decoder
+            </summary>
+        </member>
+        <member name="T:WebPWrapper.Decoder.WebPDecoderBuilder">
+            <summary>
+            Default WebP decoder builder
+            </summary>
+        </member>
+        <member name="M:WebPWrapper.Decoder.WebPDecoderBuilder.#ctor(System.String)">
+            <summary>
+            Create <see cref="T:WebPWrapper.Decoder.WebPDecoderBuilder"/>
+            </summary>
+            <param name="executeFilePath">Cli file path.</param>
+            <exception cref="T:System.PlatformNotSupportedException"></exception>
+            <exception cref="T:System.IO.FileNotFoundException"></exception>
+        </member>
+        <member name="T:WebPWrapper.Encoder.AlphaConfiguration">
+            <summary>
+            Alpha configuration
+            </summary>
+        </member>
+        <member name="M:WebPWrapper.Encoder.AlphaConfiguration.Filter(WebPWrapper.Encoder.AlphaFilters)">
+            <summary>
+            Specify the predictive filtering method for the alpha plane. One of none, fast or best, in increasing complexity and slowness order. Internally, alpha filtering is performed using four possible predictions (none, horizontal, vertical, gradient). The best mode will try each mode in turn and pick the one which gives the smaller size. The fast mode will just try to form an a priori guess without testing all modes.
+            </summary>
+            <param name="filter">Filtering method. Default is <see cref="F:WebPWrapper.Encoder.AlphaFilters.Fast"/></param> 
+        </member>
+        <member name="M:WebPWrapper.Encoder.AlphaConfiguration.DisableCompression">
+            <summary>
+            No compression
+            </summary>
+        </member>
+        <member name="M:WebPWrapper.Encoder.AlphaConfiguration.TransparentProcess(WebPWrapper.Encoder.TransparentProcesses)">
+            <summary>
+            Transparent process
+            </summary>
+            <param name="process">Process method</param>
+        </member>
+        <member name="M:WebPWrapper.Encoder.AlphaConfiguration.TransparentProcess(WebPWrapper.Encoder.TransparentProcesses,System.Drawing.Color)">
+            <summary>
+            Transparent process. (This method only works when <paramref name="process"/> = <see cref="F:WebPWrapper.Encoder.TransparentProcesses.Blend"/>)
+            </summary>
+            <param name="process">Process method</param>
+            <param name="blendColor">Blend color</param>
+        </member>
+        <member name="M:WebPWrapper.Encoder.AlphaConfiguration.GetCurrentArguments">
+            <summary>
+            Get current CLI arguments.
+            </summary>
+            <returns>Cli arguments</returns>
+        </member>
+        <member name="T:WebPWrapper.Encoder.CompressionConfiguration">
+            <summary>
+            Compression configuration
+            </summary>
+        </member>
+        <member name="M:WebPWrapper.Encoder.CompressionConfiguration.Lossless(System.Linq.Expressions.Expression{System.Action{WebPWrapper.Encoder.LosslessConfiguration}})">
+            <summary>
+            Use lossless compression.
+            </summary>
+            <param name="config">Config</param>
+        </member>
+        <member name="M:WebPWrapper.Encoder.CompressionConfiguration.NearLossless(System.Int32,System.Linq.Expressions.Expression{System.Action{WebPWrapper.Encoder.NearLosslessConfiguration}})">
+            <summary>
+            Specify the level of near-lossless image preprocessing. This option adjusts pixel values to help compressibility, but has minimal impact on the visual quality. It triggers lossless compression mode automatically.
+            </summary>
+            <param name="config">Config</param>
+            <param name="level">Level(0~100)</param>
+        </member>
+        <member name="M:WebPWrapper.Encoder.CompressionConfiguration.Lossy(System.Linq.Expressions.Expression{System.Action{WebPWrapper.Encoder.LossyConfiguration}})">
+            <summary>
+            Use lossy compression.
+            </summary>
+            <param name="config">Config</param>
+        </member>
+        <member name="M:WebPWrapper.Encoder.CompressionConfiguration.GetCurrentArguments">
+            <summary>
+            Get current CLI arguments.
+            </summary>
+            <returns>CLI arguments</returns>
+        </member>
+        <member name="T:WebPWrapper.Encoder.IWebPEncoder">
+            <summary>
+            WebP encoder
+            </summary>
+        </member>
+        <member name="M:WebPWrapper.Encoder.IWebPEncoder.EncodeAsync(System.IO.Stream,System.IO.Stream)">
+            <summary>
+            Encode.
+            </summary>
+            <param name="input">Input image</param>
+            <param name="output">Output WebP image</param>
+        </member>
+        <member name="M:WebPWrapper.Encoder.IWebPEncoder.Encode(System.IO.Stream,System.IO.Stream)">
+            <summary>
+            Encode.
+            </summary>
+            <param name="input">Input image</param>
+            <param name="output">Output WebP image</param>
+        </member>
+        <member name="M:WebPWrapper.Encoder.IWebPEncoderBuilder.Crop(System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Crop the decoded picture to a rectangle with top-left corner at coordinates (<paramref name="x"/>, <paramref name="y"/>) and size width x height. This cropping area must be fully contained within the source rectangle. The top-left corner will be snapped to even coordinates if needed. This option is meant to reduce the memory needed for cropping large images. Note: the cropping is applied before any scaling.
+            </summary>
+            <param name="x">Top-left corner X</param>
+            <param name="y">Top-left corner Y</param>
+            <param name="width">Width</param>
+            <param name="height">Height</param> 
+        </member>
+        <member name="M:WebPWrapper.Encoder.IWebPEncoderBuilder.Resize(System.Int32,System.Int32)">
+            <summary>
+            Rescale the decoded picture. At least one of <paramref name="height"/> or <paramref name="width"/> is non-zero, and if one of the values is zero then the scaling is equal
+            </summary>
+            <param name="width">Width</param>
+            <param name="height">Height</param> 
+        </member>
+        <member name="M:WebPWrapper.Encoder.IWebPEncoderBuilder.MultiThread">
+            <summary>
+            Use multi-threading for decoding, if possible.
+            </summary>
+        </member>
+        <member name="M:WebPWrapper.Encoder.IWebPEncoderBuilder.LowMemory">
+            <summary>
+            Reduce memory usage of lossy encoding by saving four times the compressed size (typically). This will make the encoding slower and the output slightly different in size and distortion.
+            </summary>
+        </member>
+        <member name="M:WebPWrapper.Encoder.IWebPEncoderBuilder.CopyMetadata(WebPWrapper.Encoder.Metadatas[])">
+            <summary>
+            A comma separated list of metadata to copy from the input to the output if present.
+            </summary>
+        </member>
+        <member name="M:WebPWrapper.Encoder.IWebPEncoderBuilder.DisableAssemblyOptimization">
+            <summary>
+            Disable all assembly optimizations.
+            </summary>
+        </member>
+        <member name="M:WebPWrapper.Encoder.IWebPEncoderBuilder.LoadPresetProfile(WebPWrapper.Encoder.PresetProfiles)">
+            <summary>
+            Specify a set of pre-defined parameters to suit a particular type of source material.
+            </summary>
+            <param name="profile">Profile</param> 
+        </member>
+        <member name="M:WebPWrapper.Encoder.IWebPEncoderBuilder.CompressionConfig(System.Linq.Expressions.Expression{System.Action{WebPWrapper.Encoder.CompressionConfiguration}})">
+            <summary>
+            Compression configuration.
+            </summary>
+            <param name="config">Config</param> 
+        </member>
+        <member name="M:WebPWrapper.Encoder.IWebPEncoderBuilder.AlphaConfig(System.Linq.Expressions.Expression{System.Action{WebPWrapper.Encoder.AlphaConfiguration}})">
+            <summary>
+            Alpha configuration.
+            </summary>
+            <param name="config">Config</param>
+        </member>
+        <member name="M:WebPWrapper.Encoder.IWebPEncoderBuilder.Reset">
+            <summary>
+            Reset.
+            </summary>
+        </member>
+        <member name="M:WebPWrapper.Encoder.IWebPEncoderBuilder.Build">
+            <summary>
+            Make WeP encoder instance.
+            </summary>
+            <returns>Web encoder instance</returns>
+        </member>
+        <member name="M:WebPWrapper.Encoder.IWebPEncoderBuilder.GetCurrentArguments">
+            <summary>
+            Get current CLI arguments.
+            </summary>
+            <returns>CLI arguments</returns>
+        </member>
+        <member name="T:WebPWrapper.Encoder.LosslessConfiguration">
+            <summary>
+            Lossless configuration
+            </summary>
+        </member>
+        <member name="M:WebPWrapper.Encoder.LosslessConfiguration.Mode(System.Int32)">
+            <summary>
+            Setting lossless compression mode.
+            </summary>
+            <param name="mode">Compression mode with the specified level between 0 and 9, with level 0 being the fastest, 9 being the slowest. Fast mode produces larger file size than slower ones. A good default is 6.</param> 
+        </member>
+        <member name="M:WebPWrapper.Encoder.LosslessConfiguration.Quality(System.Int32)">
+            <summary>
+            Specify the compression factor for RGB channels between 0 and 100.
+            </summary>
+            <param name="quality">In case of lossy compression (default), a small factor produces a smaller file with lower quality. Best quality is achieved by using a value of 100. Default is 75.</param>
+        </member>
+        <member name="M:WebPWrapper.Encoder.LosslessConfiguration.Method(System.Int32)">
+            <summary>
+            Specify the compression method to use. This parameter controls the trade off between encoding speed and the compressed file size and quality.
+            </summary>
+            <param name="method">Possible values range from 0 to 6. Default value is 4. When higher values are used, the encoder will spend more time inspecting additional encoding possibilities and decide on the quality gain. Lower value can result in faster processing time at the expense of larger file size and lower compression quality.</param>
+        </member>
+        <member name="M:WebPWrapper.Encoder.LosslessConfiguration.GetCurrentArguments">
+            <summary>
+            Get current CLI arguments.
+            </summary>
+            <returns>CLI arguments</returns>
+        </member>
+        <member name="T:WebPWrapper.Encoder.LossyConfiguration">
+            <summary>
+            Lossless configuration
+            </summary>
+        </member>
+        <member name="M:WebPWrapper.Encoder.LossyConfiguration.Mode(System.Int32)">
+            <summary>
+            Setting lossless compression mode.
+            </summary>
+            <param name="mode">Compression mode with the specified level between 0 and 9, with level 0 being the fastest, 9 being the slowest. Fast mode produces larger file size than slower ones. A good default is 6.</param> 
+        </member>
+        <member name="M:WebPWrapper.Encoder.LossyConfiguration.Quality(System.Int32)">
+            <summary>
+            Specify the compression factor for RGB channels between 0 and 100.
+            </summary>
+            <param name="quality">In case of lossy compression (default), a small factor produces a smaller file with lower quality. Best quality is achieved by using a value of 100. Default is 75.</param>
+        </member>
+        <member name="M:WebPWrapper.Encoder.LossyConfiguration.Size(System.Int32)">
+            <summary>
+            Specify a target size (in bytes) to try and reach for the compressed output. The compressor will make several passes of partial encoding in order to get as close as possible to this target.
+            </summary>
+            <param name="size">Size(bytes)</param>
+        </member>
+        <member name="M:WebPWrapper.Encoder.LossyConfiguration.Size(System.Int32,System.Int32)">
+            <summary>
+            Specify a target size (in bytes) to try and reach for the compressed output. The compressor will make several passes of partial encoding in order to get as close as possible to this target.
+            </summary>
+            <param name="size">Size(bytes)</param>
+            <param name="pass">Set a maximum number of passes to use during the dichotomy used by Size. Maximum value is 10, default is 6.</param>
+        </member>
+        <member name="M:WebPWrapper.Encoder.LossyConfiguration.Method(System.Int32)">
+            <summary>
+            Specify the compression method to use. This parameter controls the trade off between encoding speed and the compressed file size and quality.
+            </summary>
+            <param name="method">Possible values range from 0 to 6. Default value is 4. When higher values are used, the encoder will spend more time inspecting additional encoding possibilities and decide on the quality gain. Lower value can result in faster processing time at the expense of larger file size and lower compression quality.</param>
+        </member>
+        <member name="M:WebPWrapper.Encoder.LossyConfiguration.PSNR(System.Int32)">
+            <summary>
+            Specify a target PSNR (in dB) to try and reach for the compressed output. The compressor will make several passes of partial encoding in order to get as close as possible to this target.
+            </summary>
+            <param name="dB">PSNR</param>
+        </member>
+        <member name="M:WebPWrapper.Encoder.LossyConfiguration.PSNR(System.Int32,System.Int32)">
+            <summary>
+            Specify a target PSNR (in dB) to try and reach for the compressed output. The compressor will make several passes of partial encoding in order to get as close as possible to this target.
+            </summary>
+            <param name="dB">PSNR</param>
+            <param name="pass">Set a maximum number of passes to use during the dichotomy used by PSNR. Maximum value is 10, default is 6.</param>
+        </member>
+        <member name="M:WebPWrapper.Encoder.LossyConfiguration.AlphaQuality(System.Int32)">
+            <summary>
+            Specify the compression factor for alpha compression.
+            </summary>
+            <param name="quality">Quality between 0 and 100. Lossless compression of alpha is achieved using a value of 100, while the lower values result in a lossy compression. The default is 100.</param>
+        </member>
+        <member name="M:WebPWrapper.Encoder.LossyConfiguration.JPEGLike">
+            <summary>
+            Change the internal parameter mapping to better match the expected size of JPEG compression.
+            </summary>
+        </member>
+        <member name="M:WebPWrapper.Encoder.LossyConfiguration.PseudoRandomDithering(System.Int32)">
+            <summary>
+            Specify some pre-processing steps.
+            </summary>
+        </member>
+        <member name="M:WebPWrapper.Encoder.LossyConfiguration.GetCurrentArguments">
+            <summary>
+            Get current CLI arguments.
+            </summary>
+            <returns>CLI arguments</returns>
+        </member>
+        <member name="T:WebPWrapper.Encoder.NearLosslessConfiguration">
+            <summary>
+            NearLossless configuration
+            </summary>
+        </member>
+        <member name="M:WebPWrapper.Encoder.NearLosslessConfiguration.Size(System.Int32)">
+            <summary>
+            Specify a target size (in bytes) to try and reach for the compressed output. The compressor will make several passes of partial encoding in order to get as close as possible to this target.
+            </summary>
+            <param name="size">Size(bytes)</param>
+        </member>
+        <member name="M:WebPWrapper.Encoder.NearLosslessConfiguration.Size(System.Int32,System.Int32)">
+            <summary>
+            Specify a target size (in bytes) to try and reach for the compressed output. The compressor will make several passes of partial encoding in order to get as close as possible to this target.
+            </summary>
+            <param name="size">Size(bytes)</param>
+            <param name="pass">Set a maximum number of passes to use during the dichotomy used by Size. Maximum value is 10, default is 6.</param>
+        </member>
+        <member name="M:WebPWrapper.Encoder.NearLosslessConfiguration.PSNR(System.Int32)">
+            <summary>
+            Specify a target PSNR (in dB) to try and reach for the compressed output. The compressor will make several passes of partial encoding in order to get as close as possible to this target.
+            </summary>
+            <param name="dB">PSNR</param>
+        </member>
+        <member name="M:WebPWrapper.Encoder.NearLosslessConfiguration.PSNR(System.Int32,System.Int32)">
+            <summary>
+            Specify a target PSNR (in dB) to try and reach for the compressed output. The compressor will make several passes of partial encoding in order to get as close as possible to this target.
+            </summary>
+            <param name="dB">PSNR</param>
+            <param name="pass">Set a maximum number of passes to use during the dichotomy used by PSNR. Maximum value is 10, default is 6.</param>
+        </member>
+        <member name="M:WebPWrapper.Encoder.NearLosslessConfiguration.Quality(System.Int32)">
+            <summary>
+            Specify the compression factor for RGB channels between 0 and 100.
+            </summary>
+            <param name="quality">In case of lossy compression (default), a small factor produces a smaller file with lower quality. Best quality is achieved by using a value of 100. Default is 75.</param>
+        </member>
+        <member name="M:WebPWrapper.Encoder.NearLosslessConfiguration.AlphaQuality(System.Int32)">
+            <summary>
+            Specify the compression factor for alpha compression.
+            </summary>
+            <param name="quality">Quality between 0 and 100. Lossless compression of alpha is achieved using a value of 100, while the lower values result in a lossy compression. The default is 100.</param>
+        </member>
+        <member name="M:WebPWrapper.Encoder.NearLosslessConfiguration.JPEGLike">
+            <summary>
+            Change the internal parameter mapping to better match the expected size of JPEG compression.
+            </summary>
+        </member>
+        <member name="M:WebPWrapper.Encoder.NearLosslessConfiguration.PseudoRandomDithering">
+            <summary>
+            Specify some pre-processing steps.
+            </summary>
+        </member>
+        <member name="M:WebPWrapper.Encoder.NearLosslessConfiguration.Method(System.Int32)">
+            <summary>
+            Specify the compression method to use. This parameter controls the trade off between encoding speed and the compressed file size and quality.
+            </summary>
+            <param name="method">Possible values range from 0 to 6. Default value is 4. When higher values are used, the encoder will spend more time inspecting additional encoding possibilities and decide on the quality gain. Lower value can result in faster processing time at the expense of larger file size and lower compression quality.</param>
+        </member>
+        <member name="M:WebPWrapper.Encoder.NearLosslessConfiguration.Filter(System.Linq.Expressions.Expression{System.Action{WebPWrapper.Encoder.NearLosslessFilterConfiguration}})">
+            <summary>
+            NearLosslessFilter configuration.
+            </summary>
+            <param name="config">Config</param>
+            <returns></returns>
+        </member>
+        <member name="M:WebPWrapper.Encoder.NearLosslessConfiguration.GetCurrentArguments">
+            <summary>
+            Get current CLI arguments.
+            </summary>
+            <returns>CLI arguments</returns>
+        </member>
+        <member name="T:WebPWrapper.Encoder.NearLosslessFilterConfiguration">
+            <summary>
+            NearLosslessFilter configuration
+            </summary>
+        </member>
+        <member name="M:WebPWrapper.Encoder.NearLosslessFilterConfiguration.Auto">
+            <summary>
+            Turns auto-filter on. This algorithm will spend additional time optimizing the filtering strength to reach a well-balanced quality.
+            </summary>
+        </member>
+        <member name="M:WebPWrapper.Encoder.NearLosslessFilterConfiguration.Strength(System.Int32)">
+            <summary>
+            Specify the strength of the deblocking filter.
+            </summary>
+            <param name="strength">Strength between 0 (no filtering) and 100 (maximum filtering). A value of 0 will turn off any filtering. Higher value will increase the strength of the filtering process applied after decoding the picture. The higher the value the smoother the picture will appear. Typical values are usually in the range of 20 to 50.</param>
+        </member>
+        <member name="M:WebPWrapper.Encoder.NearLosslessFilterConfiguration.Sharpness(System.Int32)">
+            <summary>
+            Specify the sharpness of the filtering (if used).
+            </summary>
+            <param name="sharpness">Sharpness range is 0 (sharpest) to 7 (least sharp). Default is 0.</param> 
+        </member>
+        <member name="M:WebPWrapper.Encoder.NearLosslessFilterConfiguration.NoStrong">
+            <summary>
+            Disable strong filtering (if filtering is being used thanks to the -f option) and use simple filtering instead.
+            </summary>
+        </member>
+        <member name="M:WebPWrapper.Encoder.NearLosslessFilterConfiguration.SharpYUV">
+            <summary>
+            Use more accurate and sharper RGB->YUV conversion if needed. Note that this process is slower than the default 'fast' RGB->YUV conversion.
+            </summary>
+        </member>
+        <member name="M:WebPWrapper.Encoder.NearLosslessFilterConfiguration.SNS(System.Int32)">
+            <summary>
+            Specify the amplitude of the spatial noise shaping. Spatial noise shaping (or sns for short) refers to a general collection of built-in algorithms used to decide which area of the picture should use relatively less bits, and where else to better transfer these bits.
+            </summary>
+            <param name="sns">SNS range goes from 0 (algorithm is off) to 100 (the maximal effect). The default value is 50.</param> 
+        </member>
+        <member name="M:WebPWrapper.Encoder.NearLosslessFilterConfiguration.SNS(System.Int32,System.Int32)">
+            <summary>
+            Specify the amplitude of the spatial noise shaping. Spatial noise shaping (or sns for short) refers to a general collection of built-in algorithms used to decide which area of the picture should use relatively less bits, and where else to better transfer these bits.
+            </summary>
+            <param name="sns">SNS range goes from 0 (algorithm is off) to 100 (the maximal effect). The default value is 50.</param> 
+            <param name="segments">Change the number of partitions to use during the segmentation of the sns algorithm. Segments should be in range 1 to 4. Default value is 4. This option has no effect for methods 3 and up, unless -low_memory is used.</param>
+        </member>
+        <member name="M:WebPWrapper.Encoder.NearLosslessFilterConfiguration.PartitionLimit(System.Int32)">
+            <summary>
+            Degrade quality by limiting the number of bits used by some macroblocks.
+            </summary>
+            <param name="limit">Range is 0 (no degradation, the default) to 100 (full degradation). </param>
+        </member>
+        <member name="M:WebPWrapper.Encoder.NearLosslessFilterConfiguration.GetCurrentArguments">
+            <summary>
+            Get current CLI arguments.
+            </summary>
+            <returns>CLI arguments</returns>
+        </member>
+        <member name="F:WebPWrapper.Encoder.TransparentProcesses.Exact">
+            <summary>
+            Preserve RGB values in transparent area.
+            </summary>
+        </member>
+        <member name="F:WebPWrapper.Encoder.TransparentProcesses.Remove">
+            <summary>
+            Using this option will discard the alpha channel.
+            </summary>
+        </member>
+        <member name="F:WebPWrapper.Encoder.TransparentProcesses.Blend">
+            <summary>
+            This option blends the alpha channel (if present).
+            </summary>
+        </member>
+        <member name="T:WebPWrapper.Encoder.WebPEncoder">
+            <summary>
+            Default WebP encoder
+            </summary>
+        </member>
+        <member name="T:WebPWrapper.Encoder.WebPEncoderBuilder">
+            <summary>
+            Default WebP encoder builder
+            </summary>
+        </member>
+        <member name="M:WebPWrapper.Encoder.WebPEncoderBuilder.#ctor(System.String)">
+            <summary>
+            Create <see cref="T:WebPWrapper.Encoder.WebPEncoderBuilder"/>
+            </summary>
+            <param name="executeFilePath">Cli file path.</param>
+            <exception cref="T:System.PlatformNotSupportedException"></exception>
+            <exception cref="T:System.IO.FileNotFoundException"></exception>
+        </member>
+        <member name="T:WebPWrapper.TarFile">
+            <summary>
+            Tar Helper
+            </summary>
+        </member>
+        <member name="T:WebPWrapper.WebPExecuteDownloader">
+            <summary>
+            WebP Cli downloader
+            </summary>
+        </member>
+        <member name="M:WebPWrapper.WebPExecuteDownloader.DownloadAsync(System.Boolean)">
+            <summary>
+            Download CLI binary file.
+            </summary>
+            <param name="ignoreIfExtsis">When the CLI already exists, it will not be downloaded</param>
+            <returns></returns>
+            <exception cref="T:System.PlatformNotSupportedException"></exception>
+        </member>
+        <member name="M:WebPWrapper.WebPExecuteDownloader.Download(System.Boolean)">
+            <summary>
+            Download CLI binary file
+            </summary>
+            <param name="ignoreIfExtsis">When the CLI already exists, it will not be downloaded</param>
+        </member>
+    </members>
+</doc>
