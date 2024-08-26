@@ -10,3 +10,4 @@ int main(array<String^>^ args) {
 	ImageFormatConverter::Converter form;
 	Application::Run(% form);
 }
+

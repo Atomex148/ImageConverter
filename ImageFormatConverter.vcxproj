@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -78,10 +78,13 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\VS projects\ImageFormatConverter\libwebp-1.4.0-windows-x64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalDependencies />
+      <AdditionalDependencies>D:\VS projects\ImageFormatConverter\libwebp-1.4.0-windows-x64\lib\libwebp.lib;D:\VS projects\ImageFormatConverter\libwebp-1.4.0-windows-x64\lib\libwebpdemux.lib;D:\VS projects\ImageFormatConverter\libwebp-1.4.0-windows-x64\lib\libwebpmux.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <EntryPointSymbol>main</EntryPointSymbol>
+      <SubSystem>Console</SubSystem>
+      <AdditionalLibraryDirectories>D:\VS projects\ImageFormatConverter\libwebp-1.4.0-windows-x64\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -121,6 +124,8 @@
   <ItemGroup>
     <ClCompile Include="Converter.cpp" />
     <ClCompile Include="convertImg.cpp" />
+    <ClCompile Include="convertWebpToPng.cpp" />
+    <ClCompile Include="lodepng.cpp" />
     <ClCompile Include="onDragDrop.cpp" />
     <ClCompile Include="onDragEnter.cpp" />
   </ItemGroup>
@@ -128,6 +133,7 @@
     <ClInclude Include="Converter.h">
       <FileType>CppForm</FileType>
     </ClInclude>
+    <ClInclude Include="lodepng.h" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Converter.resx">

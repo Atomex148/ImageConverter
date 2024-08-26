@@ -1,6 +1,18 @@
 #pragma once
+#include "lodepng.h"
 #include <msclr/marshal_cppstd.h>
 #include <string>
+#include <fstream>
+#include <webp/decode.h>
+#include <webp/encode.h>
+
+enum CURRENT_IMG_FORMAT {
+    IMG_NULL = 0,
+    PNG,
+    JPG,
+    WEBP,
+    BMP
+};
 
 namespace ImageFormatConverter {
 
@@ -18,8 +30,8 @@ namespace ImageFormatConverter {
         {
             InitializeComponent();
             this->AllowDrop = true;
-            formatNamesDefault = gcnew array<String^> { L"png", L"jpg", L"bmp", L"webp" };
-            formatNames = gcnew array<String^> {};
+            formatNamesDefault = gcnew array<System::String^> { L"png", L"jpg", L"bmp", L"webp" };
+            formatNames = gcnew array<System::String^> {};
             formatTo->Items->AddRange(formatNamesDefault);
             this->DragEnter += gcnew DragEventHandler(this, &Converter::onDragEnter);
             this->DragDrop += gcnew DragEventHandler(this, &Converter::onDragDrop);
@@ -35,12 +47,13 @@ namespace ImageFormatConverter {
         }
 
     private:
-        array<String^>^ formatNamesDefault, ^formatNames;
-
+        array<System::String^>^ formatNamesDefault, ^formatNames;
         System::Windows::Forms::ComboBox^ formatTo;
         System::Windows::Forms::Button^ convert_btn;
         System::Windows::Forms::PictureBox^ img_to_convert;
         System::ComponentModel::Container^ components;
+        CURRENT_IMG_FORMAT current_format = IMG_NULL;
+
         bool notImg = false;
 
 #pragma region Windows Form Designer generated code
@@ -81,6 +94,7 @@ namespace ImageFormatConverter {
             this->img_to_convert->SizeMode = System::Windows::Forms::PictureBoxSizeMode::Zoom;
             this->img_to_convert->TabIndex = 3;
             this->img_to_convert->TabStop = false;
+            //this->img_to_convert->Click += gcnew System::EventHandler(this, &Converter::img_to_convert_Click);
             // 
             // Converter
             // 
@@ -101,5 +115,7 @@ namespace ImageFormatConverter {
         void convertImg(System::Object^ sender, System::EventArgs^ e);
         void onDragEnter(System::Object^ sender, System::Windows::Forms::DragEventArgs^ e);
         void onDragDrop(System::Object^ sender, System::Windows::Forms::DragEventArgs^ e);
+        std::vector<unsigned char> convertWebpToPng(System::String^ path);
+        void choosePicture(System::Object^ sender, System::EventArgs^ e) {}
     };
 }
