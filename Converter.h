@@ -5,6 +5,7 @@
 #include <fstream>
 #include <webp/decode.h>
 #include <webp/encode.h>
+#include <turbojpeg.h>
 
 enum CURRENT_IMG_FORMAT {
     IMG_NULL = 0,
@@ -53,6 +54,7 @@ namespace ImageFormatConverter {
         System::Windows::Forms::PictureBox^ img_to_convert;
         System::ComponentModel::Container^ components;
         CURRENT_IMG_FORMAT current_format = IMG_NULL;
+        String^ filePath;
 
         bool notImg = false;
 
@@ -115,7 +117,9 @@ namespace ImageFormatConverter {
         void convertImg(System::Object^ sender, System::EventArgs^ e);
         void onDragEnter(System::Object^ sender, System::Windows::Forms::DragEventArgs^ e);
         void onDragDrop(System::Object^ sender, System::Windows::Forms::DragEventArgs^ e);
-        std::vector<unsigned char> convertWebpToPng(System::String^ path);
+        std::vector<unsigned char> webpToPng(System::String^ path);
+        int pngToJpeg(System::String^ path);
+        int jpegToPng(System::String^ path);
         void choosePicture(System::Object^ sender, System::EventArgs^ e) {}
     };
 }

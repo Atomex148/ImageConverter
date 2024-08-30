@@ -27,10 +27,10 @@
     <ClCompile Include="onDragDrop.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="convertWebpToPng.cpp">
+    <ClCompile Include="lodepng.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="lodepng.cpp">
+    <ClCompile Include="convertFunctions.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>

@@ -8,8 +8,10 @@ void ImageFormatConverter::Converter::convertImg(System::Object^ sender, System:
 
     switch (current_format) {
     case PNG:
+        if (toFormat == L"jpg") pngToJpeg(filePath);
         break;
     case JPG:
+        if (toFormat == L"png") jpegToPng(filePath);
         break;
     case BMP:
         break;

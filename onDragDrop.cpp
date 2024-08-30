@@ -3,7 +3,7 @@
 void ImageFormatConverter::Converter::onDragDrop(System::Object^ sender, System::Windows::Forms::DragEventArgs^ e) {
     if (e->Data->GetDataPresent(DataFormats::FileDrop) && !notImg) {
         array<String^>^ files = dynamic_cast<array<String^>^>(e->Data->GetData(DataFormats::FileDrop));
-        String^ filePath = files[0];
+        filePath = files[0];
 
         if (this->img_to_convert->Image != nullptr) {
             delete this->img_to_convert->Image;
@@ -20,7 +20,7 @@ void ImageFormatConverter::Converter::onDragDrop(System::Object^ sender, System:
             this->img_to_convert->Image = System::Drawing::Image::FromFile(filePath);
         }
         else if (extension == L"webp") {
-            std::vector<unsigned char> png_data = convertWebpToPng(filePath);
+            std::vector<unsigned char> png_data = webpToPng(filePath);
             if (!png_data.empty()) {
                 cli::array<unsigned char>^ pngArray = gcnew cli::array<unsigned char>(png_data.size());
                 System::Runtime::InteropServices::Marshal::Copy((IntPtr)png_data.data(), pngArray, 0, png_data.size());
