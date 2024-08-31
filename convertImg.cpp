@@ -16,6 +16,8 @@ void ImageFormatConverter::Converter::convertImg(System::Object^ sender, System:
     case BMP:
         break;
     case WEBP:
+        if (toFormat == L"png") webpToPng(filePath);
+        else if (toFormat == L"jpg") webpToJpeg(filePath);
         break;
     }
 }

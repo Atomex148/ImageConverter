@@ -117,9 +117,11 @@ namespace ImageFormatConverter {
         void convertImg(System::Object^ sender, System::EventArgs^ e);
         void onDragEnter(System::Object^ sender, System::Windows::Forms::DragEventArgs^ e);
         void onDragDrop(System::Object^ sender, System::Windows::Forms::DragEventArgs^ e);
-        std::vector<unsigned char> webpToPng(System::String^ path);
+        std::vector<unsigned char> webpToPng_forProgramImage(System::String^ path);
+        int webpToPng(System::String^ path);
         int pngToJpeg(System::String^ path);
         int jpegToPng(System::String^ path);
+        int webpToJpeg(System::String^ path);
         void choosePicture(System::Object^ sender, System::EventArgs^ e) {}
     };
 }

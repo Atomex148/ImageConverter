@@ -1,6 +1,6 @@
 #include "Converter.h"
 
-std::vector<unsigned char> ImageFormatConverter::Converter::webpToPng(System::String^ inputPath) {
+std::vector<unsigned char> ImageFormatConverter::Converter::webpToPng_forProgramImage(System::String^ inputPath) {
     std::vector<unsigned char> png_data;
     std::string input_path = msclr::interop::marshal_as<std::string>(inputPath);
 
@@ -55,6 +55,12 @@ std::vector<unsigned char> ImageFormatConverter::Converter::webpToPng(System::St
     return png_data;
 }
 
+int ImageFormatConverter::Converter::webpToPng(System::String^ inputPath) {
+    System::String^ savePath = System::IO::Path::ChangeExtension(inputPath, L".png");
+    this->img_to_convert->Image->Save(savePath);
+    return 0;
+}
+
 int ImageFormatConverter::Converter::pngToJpeg(System::String^ inputPath) {
     std::string path_to_png = msclr::interop::marshal_as<std::string>(inputPath);
     if (path_to_png == "") return -1;
@@ -85,7 +91,7 @@ int ImageFormatConverter::Converter::pngToJpeg(System::String^ inputPath) {
     unsigned long jpegSize = 0;
 
     int result = tjCompress2(compressor, imageRGB.data(), width, 0, height, TJPF_RGB,
-        &jpegBuf, &jpegSize, TJSAMP_444, 75, TJFLAG_FASTDCT);
+        &jpegBuf, &jpegSize, TJSAMP_444, 100, TJFLAG_FASTDCT);
     if (result != 0) {
         tjFree(jpegBuf);
         tjDestroy(compressor);
@@ -175,3 +181,65 @@ int ImageFormatConverter::Converter::jpegToPng(System::String^ inputPath) {
     tjDestroy(decompressor);
     return 0;
 } 
+
+int ImageFormatConverter::Converter::webpToJpeg(System::String^ inputPath) {
+    std::string path_to_webp = msclr::interop::marshal_as<std::string>(inputPath);
+
+    System::Drawing::Image^ img = this->img_to_convert->Image;
+    System::IO::MemoryStream^ memoryStream = gcnew System::IO::MemoryStream();
+    img->Save(memoryStream, System::Drawing::Imaging::ImageFormat::Png);
+
+    array<unsigned char>^ managedBytes = memoryStream->ToArray();
+    pin_ptr<unsigned char> pinnedBytes = &managedBytes[0];
+    unsigned char* bytes = pinnedBytes;
+
+    tjhandle compressor = tjInitCompress();
+    if (compressor == NULL) return -1;
+
+    std::vector<unsigned char> image;
+    unsigned width, height;
+    unsigned error = lodepng::decode(image, width, height, bytes, managedBytes->Length);
+    if (error) return -1;
+
+    std::vector<unsigned char> imageRGB(width * height * 3);
+    for (unsigned i = 0, j = 0; i < width * height * 4; i += 4, j += 3) {
+        if (image[i + 3] == 0) {
+            imageRGB[j] = 255;
+            imageRGB[j + 1] = 255;
+            imageRGB[j + 2] = 255;
+        }
+        else {
+            imageRGB[j] = image[i];
+            imageRGB[j + 1] = image[i + 1];
+            imageRGB[j + 2] = image[i + 2];
+        }
+    }
+
+    unsigned char* jpegBuf = NULL;
+    unsigned long jpegSize = 0;
+
+    int result = tjCompress2(compressor, imageRGB.data(), width, 0, height, TJPF_RGB,
+        &jpegBuf, &jpegSize, TJSAMP_444, 100, TJFLAG_FASTDCT);
+    if (result != 0) {
+        tjFree(jpegBuf);
+        tjDestroy(compressor);
+        return -1;
+    }
+
+    std::size_t lastDot = path_to_webp.find_last_of(".");
+    std::string outputPath = path_to_webp.substr(0, lastDot) + ".jpg";
+
+    FILE* outputFile = fopen(outputPath.c_str(), "wb");
+    if (!outputFile) {
+        tjFree(jpegBuf);
+        tjDestroy(compressor);
+        return -1;
+    }
+
+    fwrite(jpegBuf, jpegSize, 1, outputFile);
+    fclose(outputFile);
+    tjFree(jpegBuf);
+    tjDestroy(compressor);
+
+    return 0;
+}

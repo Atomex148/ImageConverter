@@ -20,7 +20,7 @@ void ImageFormatConverter::Converter::onDragDrop(System::Object^ sender, System:
             this->img_to_convert->Image = System::Drawing::Image::FromFile(filePath);
         }
         else if (extension == L"webp") {
-            std::vector<unsigned char> png_data = webpToPng(filePath);
+            std::vector<unsigned char> png_data = webpToPng_forProgramImage(filePath);
             if (!png_data.empty()) {
                 cli::array<unsigned char>^ pngArray = gcnew cli::array<unsigned char>(png_data.size());
                 System::Runtime::InteropServices::Marshal::Copy((IntPtr)png_data.data(), pngArray, 0, png_data.size());
@@ -36,6 +36,7 @@ void ImageFormatConverter::Converter::onDragDrop(System::Object^ sender, System:
             else {
                 MessageBox::Show("Failed to load WebP", "Error", MessageBoxButtons::OK, MessageBoxIcon::Error);
             }
+            current_format = WEBP;
         }
         else if (extension == L"png") {
             current_format = PNG;
