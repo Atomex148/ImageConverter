@@ -1,6 +1,6 @@
 #include "Converter.h"
 
-std::vector<unsigned char> ImageFormatConverter::Converter::webpToPng_forProgramImage(System::String^ inputPath) {
+inline std::vector<unsigned char> ImageFormatConverter::Converter::webpToPng_forProgramImage(System::String^ inputPath) {
     std::vector<unsigned char> png_data;
     std::string input_path = msclr::interop::marshal_as<std::string>(inputPath);
 
@@ -55,13 +55,13 @@ std::vector<unsigned char> ImageFormatConverter::Converter::webpToPng_forProgram
     return png_data;
 }
 
-int ImageFormatConverter::Converter::webpToPng(System::String^ inputPath) {
+inline int ImageFormatConverter::Converter::webpToPng(System::String^ inputPath) {
     System::String^ savePath = System::IO::Path::ChangeExtension(inputPath, L".png");
     this->img_to_convert->Image->Save(savePath);
     return 0;
 }
 
-int ImageFormatConverter::Converter::pngToJpeg(System::String^ inputPath) {
+inline int ImageFormatConverter::Converter::pngToJpeg(System::String^ inputPath) {
     std::string path_to_png = msclr::interop::marshal_as<std::string>(inputPath);
     if (path_to_png == "") return -1;
 
@@ -116,7 +116,7 @@ int ImageFormatConverter::Converter::pngToJpeg(System::String^ inputPath) {
     return 0;
 }
 
-int ImageFormatConverter::Converter::jpegToPng(System::String^ inputPath) {
+inline int ImageFormatConverter::Converter::jpegToPng(System::String^ inputPath) {
     std::string path_to_png = msclr::interop::marshal_as<std::string>(inputPath);
     if (path_to_png == "") return -1;
 
@@ -182,7 +182,7 @@ int ImageFormatConverter::Converter::jpegToPng(System::String^ inputPath) {
     return 0;
 } 
 
-int ImageFormatConverter::Converter::webpToJpeg(System::String^ inputPath) {
+inline int ImageFormatConverter::Converter::webpToJpeg(System::String^ inputPath) {
     std::string path_to_webp = msclr::interop::marshal_as<std::string>(inputPath);
 
     System::Drawing::Image^ img = this->img_to_convert->Image;
@@ -240,6 +240,89 @@ int ImageFormatConverter::Converter::webpToJpeg(System::String^ inputPath) {
     fclose(outputFile);
     tjFree(jpegBuf);
     tjDestroy(compressor);
+
+    return 0;
+}
+
+inline int ImageFormatConverter::Converter::pngToWebp(System::String^ inputPath) {
+    std::string path_to_png = msclr::interop::marshal_as<std::string>(inputPath);
+    if (path_to_png == "") return -1;
+
+    std::vector<unsigned char> image;
+    unsigned width, height;
+    unsigned error = lodepng::decode(image, width, height, path_to_png);
+    if (error) return -1;
+
+    unsigned char* output;
+    std::size_t image_size = WebPEncodeRGBA(image.data(), width, height, width * 4, 100, &output);
+    if (image_size == 0) return -1;
+
+    std::size_t lastDot = path_to_png.find_last_of(".");
+    std::string outputPath = path_to_png.substr(0, lastDot) + ".webp";
+    FILE* outputFile = fopen(outputPath.c_str(), "wb");
+    if (!outputFile) {
+        WebPFree(output);
+        return -1;
+    }
+
+    fwrite(output, image_size, 1, outputFile);
+    fclose(outputFile);
+    WebPFree(output);
+
+    return 0;
+}
+
+inline int ImageFormatConverter::Converter::jpegToWebp(System::String^ inputPath) {
+    std::string path_to_png = msclr::interop::marshal_as<std::string>(inputPath);
+    if (path_to_png == "") return -1;
+
+    tjhandle decompressor = tjInitDecompress();
+    if (decompressor == NULL) return -1;
+
+    std::ifstream file(path_to_png, std::ios::binary | std::ios::ate);
+    if (!file.is_open()) {
+        tjDestroy(decompressor);
+        return -1;
+    }
+
+    std::streamsize size = file.tellg();
+    std::vector<unsigned char> buffer(size);
+    file.seekg(0, std::ios::beg);
+    if (!file.read(reinterpret_cast<char*>(buffer.data()), size)) {
+        tjDestroy(decompressor);
+        file.close();
+        return -1;
+    }
+    file.close();
+
+    int width, height, subsamp, colorspace;
+    if (tjDecompressHeader3(decompressor, buffer.data(), size, &width, &height, &subsamp, &colorspace) < 0) {
+        tjDestroy(decompressor);
+        return -1;
+    }
+
+    std::vector<unsigned char> image(width * height * 3);
+    if (tjDecompress2(decompressor, buffer.data(), size, image.data(), width, 0, height, TJPF_RGB, 0) < 0) {
+        tjDestroy(decompressor);
+        return -1;
+    }
+    tjDestroy(decompressor);
+
+    unsigned char* output;
+    std::size_t image_size = WebPEncodeRGB(image.data(), width, height, width * 3, 100, &output);
+    if (image_size == 0) return -1;
+    
+    std::size_t lastDot = path_to_png.find_last_of(".");
+    std::string outputPath = path_to_png.substr(0, lastDot) + ".webp";
+    FILE* outputFile = fopen(outputPath.c_str(), "wb");
+    if (!outputFile) {
+        WebPFree(output);
+        return -1;
+    }
+
+    fwrite(output, image_size, 1, outputFile);
+    fclose(outputFile);
+    WebPFree(output);
 
     return 0;
 }
